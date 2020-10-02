@@ -107,7 +107,13 @@ add() {
 list() {
 	[ -d "${STORE_DIR}"/"${1:-}" ] || usage 'no such group'
 
-	tree ${gflag:+-d} -Fx -- "${STORE_DIR}"/"${1:-}" | view
+	if [ -t 1 ]; then
+		tree ${gflag:+-d} -Fx -- "${STORE_DIR}"/"${1:-}" | view
+	elif [ -n "$gflag" ]; then
+		(cd ${STORE_DIR}; command find * -type d)
+	else
+		(cd ${STORE_DIR}; command find * -type f)
+	fi
 }
 
 del() {
